@@ -1,48 +1,37 @@
-
 const Projects = require("../Models/Projects");
 
-const getAllProjectDetails = async(req, res) => {
-  try{
-    const ProjectDetails = await Projects.find();
-    res.status(200).return(ProjectDetails)
-  }
-  catch(error){
-    res.status(500).send({message : error})
-  }
-}
 
-const getProjectDetails = async(req, res) => {
+const getAllLikes = async (req, res) => {
   try{
-    const project = await Projects.find({name: req.body.name});
-    if(project === undefined) return res.status(404).send({
-      message : "Project id Not found"
-    })
-    res.status(200).send(project)
+    const projectLikes = await Projects.find();
+    res.status(200).send(projectLikes);
   }
   catch(error){
-    res.status(500).send({message : error});
+    res.status(500).send({message:error})
   }
 }
 
 const Like = async (req, res) => {
+  const likes = req.body.likes;
+  const title = req.body.title;
   try{
-    const project = await Projects.find({name: req.body.name});
-    if(project === undefined){
-      const project =  await new Projects({
-        likes : 1,
-        name : req.body.name
+    if(likes === 0){
+      const project = await new Projects({
+        title: title,
+        likes: 1
       })
       project.save();
-    }else{
-      await project.updateOne({name: req.body.name}, {
-        likes : project.likes + 1
-      })
     }
-    res.status(200).send(project)
+    else{
+      await Projects.findOneAndUpdate({title: title}, {
+        likes : likes + 1
+      }, {new: true})
+    }
+    res.status(200).send({message : `You Liked ${title} !`});
   }
   catch(error){
     res.status(500).send({message: error})
   }
 }
 
-module.exports = {getAllProjectDetails, getProjectDetails, Like}
+module.exports = {Like, getAllLikes}

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {getComments, createComment} = require('../Controllers/comments');
-const { getProjectDetails, Like} = require('../Controllers/projects');
+const {Like, getAllLikes} = require('../Controllers/projects');
 
 
 router.get("/", (req, res) => {
@@ -11,9 +11,8 @@ router.get("/", (req, res) => {
 })
 
 router.get("/comments",  getComments);
-
+router.get('/likes', getAllLikes);
 router.post("/post_comment", createComment);
-router.post("/project", getProjectDetails);
 router.post('/like', Like);
 
 module.exports = router;
